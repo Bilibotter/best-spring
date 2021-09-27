@@ -15,9 +15,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     @Override
-    public BeanDefinition getBeanDefinition(String name) throws Exception {
+    public BeanDefinition getBeanDefinition(String name){
         BeanDefinition beanDefinition = beanDefinitionMap.get(name);
-        assert (beanDefinition != null);
+        if (beanDefinition == null) {
+            throw new IllegalArgumentException("Bean definition can't be null!");
+        }
         return beanDefinition;
     }
 }

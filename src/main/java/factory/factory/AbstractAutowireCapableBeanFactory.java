@@ -1,22 +1,28 @@
 package factory.factory;
 
+import cn.hutool.core.bean.BeanUtil;
 import factory.bean.BeanDefinition;
+import factory.bean.BeanReference;
 import factory.support.CglibSubclassingInstantiationStrategy;
 import factory.support.InstantiationStrategy;
+import factory.support.PropertyValue;
+import factory.support.PropertyValues;
 
 import java.lang.reflect.Constructor;
+import java.util.Properties;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
 
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
     @Override
-    protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws Exception {
+    protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args){
         Object bean = null;
         try {
             bean = createBeanInstance(beanName, beanDefinition, args);
+            applyPropertyValues(beanName, bean, beanDefinition);
         } catch (Exception e) {
-            throw new Exception("Instantiation of bean failed", e);
+            throw new RuntimeException("Instantiation of bean failed", e);
         }
         addSingleton(beanName, bean);
         return bean;
@@ -34,6 +40,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             }
         }
         return getInstantiationStrategy().instantiate(beanDefinition, beanName, constructorToUse, args);
+    }
+
+    protected void applyPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
+        try {
+            PropertyValues propertyValues = beanDefinition.getPropertyValues();
+            for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
+                String name = propertyValue.getName();
+                Object value = propertyValue.getValue();
+                if (value instanceof BeanReference) {
+                    BeanReference beanReference = (BeanReference) value;
+                    value = getBean(beanReference.getBeanName());
+                }
+                BeanUtil.setProperty(bean, name, value);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error setting property values: "+beanName, e);
+        }
     }
 
     public InstantiationStrategy getInstantiationStrategy() {

@@ -1,5 +1,8 @@
 package factory.factory;
 
+import factory.bean.BeanDefinition;
+import factory.bean.DefaultSingletonBeanRegistry;
+
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory{
     @Override
     public Object getBean(String name) throws Exception {

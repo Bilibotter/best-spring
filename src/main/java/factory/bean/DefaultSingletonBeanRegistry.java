@@ -1,4 +1,6 @@
-package factory.factory;
+package factory.bean;
+
+import factory.bean.SingletonBeanRegistry;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

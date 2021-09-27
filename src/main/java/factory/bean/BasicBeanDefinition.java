@@ -1,4 +1,4 @@
-package factory.factory;
+package factory.bean;
 
 public class BasicBeanDefinition implements BeanDefinition {
     private Class beanClass;

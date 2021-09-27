@@ -1,4 +1,6 @@
-package factory.factory;
+package factory.support;
+
+import factory.bean.BeanDefinition;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

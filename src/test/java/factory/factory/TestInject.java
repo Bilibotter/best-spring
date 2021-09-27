@@ -1,5 +1,8 @@
 package factory.factory;
 
+import factory.bean.BasicBeanDefinition;
+import factory.bean.BeanDefinition;
+import factory.support.SimpleInstantiationStrategy;
 import org.junit.Test;
 import temp.UserServiceImpl;
 

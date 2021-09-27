@@ -1,4 +1,4 @@
-package factory.factory;
+package factory.bean;
 
 public interface SingletonBeanRegistry {
     Object getSingleton(String beanName);

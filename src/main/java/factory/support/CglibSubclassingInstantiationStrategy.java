@@ -1,5 +1,7 @@
-package factory.factory;
+package factory.support;
 
+import factory.bean.BeanDefinition;
+import factory.support.InstantiationStrategy;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.NoOp;
 

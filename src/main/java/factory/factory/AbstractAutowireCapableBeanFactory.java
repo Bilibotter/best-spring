@@ -1,5 +1,9 @@
 package factory.factory;
 
+import factory.bean.BeanDefinition;
+import factory.support.CglibSubclassingInstantiationStrategy;
+import factory.support.InstantiationStrategy;
+
 import java.lang.reflect.Constructor;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {

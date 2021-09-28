@@ -22,4 +22,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         }
         return beanDefinition;
     }
+
+    @Override
+    public boolean containsBeanDefinition(String beanName) {
+        return beanDefinitionMap.containsKey(beanName);
+    }
 }

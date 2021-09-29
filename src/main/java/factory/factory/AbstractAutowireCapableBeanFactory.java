@@ -30,6 +30,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return bean;
     }
 
+    private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+        Object wrappedBean
+    }
+
     protected Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) throws Exception {
         Constructor constructorToUse = null;
         Class<?> beanClass = beanDefinition.getBeanClass();
@@ -74,7 +78,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object result = existingBean;
         for (BeanPostProcessor processor : getBeanPostProcessors()) {
             Object current = processor.postProcessBeforeInitialization(result, beanName);
-            if (null == current) return result;
+            if (current == null) {
+                return result;
+            }
             result = current;
         }
         return result;
@@ -85,7 +91,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object result = existingBean;
         for (BeanPostProcessor processor : getBeanPostProcessors()) {
             Object current = processor.postProcessAfterInitialization(result, beanName);
-            if (null == current) return result;
+            if (current == null) {
+                return result;
+            }
             result = current;
         }
         return result;

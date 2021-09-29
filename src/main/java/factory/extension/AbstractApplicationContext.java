@@ -9,7 +9,11 @@ import java.util.Map;
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext {
     @Override
     public void refresh() {
-
+        refreshBeanFactory();
+        ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+        invokeBeanFactoryPostProcessors(beanFactory);
+        registerBeanFactory(beanFactory);
+        beanFactory.preInstantiateSingletons();
     }
 
     protected abstract void refreshBeanFactory();

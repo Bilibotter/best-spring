@@ -1,8 +1,10 @@
 package factory.factory;
 
 import cn.hutool.core.bean.BeanUtil;
+import factory.bean.AutowireCapableBeanFactory;
 import factory.bean.BeanDefinition;
 import factory.bean.BeanReference;
+import factory.extension.BeanPostProcessor;
 import factory.support.CglibSubclassingInstantiationStrategy;
 import factory.support.InstantiationStrategy;
 import factory.support.PropertyValue;
@@ -11,7 +13,7 @@ import factory.support.PropertyValues;
 import java.lang.reflect.Constructor;
 import java.util.Properties;
 
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
@@ -65,5 +67,27 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
         this.instantiationStrategy = instantiationStrategy;
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessBeforeInitialization(result, beanName);
+            if (null == current) return result;
+            result = current;
+        }
+        return result;
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            Object current = processor.postProcessAfterInitialization(result, beanName);
+            if (null == current) return result;
+            result = current;
+        }
+        return result;
     }
 }

@@ -1,7 +1,7 @@
 package temp;
 
 public class UserServiceHolder {
-    private UserService userService;
+    private UserServicePlus userService;
 
     public UserServiceHolder() {
     }

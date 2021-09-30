@@ -23,7 +23,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     private void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
         Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);
         for (BeanFactoryPostProcessor beanFactoryPostProcessor : beanFactoryPostProcessorMap.values()) {
-            beanFactoryPostProcessor.postProcessorBeanFacotory(beanFactory);
+            beanFactoryPostProcessor.postProcessorBeanFactory(beanFactory);
         }
     }
 

@@ -1,5 +1,7 @@
 package factory.factory;
 
+import factory.bean.ConfigurableListableBeanFactory;
+
 public interface BeanFactoryPostProcessor {
-    void postProcessorBeanFacotory(BeanFactory beanFactory);
+    void postProcessorBeanFactory(ConfigurableListableBeanFactory beanFactory);
 }

@@ -1,6 +1,6 @@
 package temp;
 
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserServicePlus {
 
     private String name;
 

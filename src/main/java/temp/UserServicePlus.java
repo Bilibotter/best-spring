@@ -1,5 +1,5 @@
 package temp;
 
-public interface UserService {
+public interface UserServicePlus {
     void queryUserInfo();
 }

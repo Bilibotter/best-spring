@@ -33,12 +33,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     @Override
     public void loadBeanDefinitions(Resource... resources) {
-
+        for (Resource resource:resources) {
+            loadBeanDefinitions(resource);
+        }
     }
 
     @Override
     public void loadBeanDefinitions(String location) {
-
+        ResourceLoader resourceLoader = getResourceLoader();
+        Resource resource = resourceLoader.getResource(location);
+        loadBeanDefinitions(resource);
     }
 
     protected void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException {
@@ -81,16 +85,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 String attrValue = property.getAttribute("value");
                 String attrRef = property.getAttribute("ref");
                 // 获取属性值：引入对象、值对象
-                Object value = StrUtil.isNotEmpty(attrRef) ? new BeanReference(attrRef) : attrValue;
+                Object value = StrUtil.isNotEmpty(attrRef) ? new BasicBeanReference(attrRef) : attrValue;
                 // 创建属性信息
                 PropertyValue propertyValue = new PropertyValue(attrName, value);
                 beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
             }
             if (getRegistry().containsBeanDefinition(beanName)) {
-                throw new BeansException("Duplicate beanName[" + beanName + "] is not allowed");
+                throw new RuntimeException("Duplicate beanName[" + beanName + "] is not allowed");
             }
             // 注册 BeanDefinition
-            getRegistry().registerBeanDefinition(beanName, beanDefinition);
+            getRegistry().registryBeanDefinition(beanName, beanDefinition);
         }
     }
 }

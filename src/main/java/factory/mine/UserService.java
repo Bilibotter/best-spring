@@ -43,4 +43,14 @@ public class UserService {
         this.userDao = userDao;
     }
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("UserService{");
+        sb.append("uId='").append(uId).append('\'');
+        sb.append(", company='").append(company).append('\'');
+        sb.append(", location='").append(location).append('\'');
+        sb.append(", userDao=").append(userDao);
+        sb.append('}');
+        return sb.toString();
+    }
 }

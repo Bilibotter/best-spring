@@ -23,6 +23,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         try {
             bean = createBeanInstance(beanName, beanDefinition, args);
             applyPropertyValues(beanName, bean, beanDefinition);
+            bean = initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new RuntimeException("Instantiation of bean failed", e);
         }

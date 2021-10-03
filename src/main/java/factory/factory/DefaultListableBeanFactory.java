@@ -7,6 +7,7 @@ import factory.extension.BeanPostProcessor;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry, ConfigurableListableBeanFactory {
     private Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
@@ -42,7 +43,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public <T> Map<String, T> getBeansOfType(Class<T> type) {
-        return null;
+        return beanDefinitionMap.entrySet().stream()
+                .filter(it->type.isAssignableFrom(it.getValue().getBeanClass()))
+                .collect(Collectors.toMap(Map.Entry::getKey, it->(T) getBean(it.getKey())));
     }
 
     @Override

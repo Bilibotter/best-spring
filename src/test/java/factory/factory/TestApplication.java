@@ -30,6 +30,7 @@ public class TestApplication {
         System.out.println("测试结果：" + userService);
     }
 
+    /*
     @Test
     public void test_xml() {
         // 1.初始化 BeanFactory
@@ -40,4 +41,6 @@ public class TestApplication {
         String result = userService.queryUserInfo();
         System.out.println("测试结果：" + result);
     }
+
+     */
 }

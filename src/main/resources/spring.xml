@@ -3,7 +3,7 @@
 
     <bean id="userDao" class="factory.mine.UserDao"/>
 
-    <bean id="userService" class="factory.mine.UserService">
+    <bean id="userService" class="factory.mine.UserService" init-method="init" destroy-method="close">
         <property name="uId" value="10001"/>
         <property name="company" value="腾讯"/>
         <property name="location" value="深圳"/>

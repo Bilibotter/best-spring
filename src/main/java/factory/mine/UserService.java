@@ -1,6 +1,9 @@
 package factory.mine;
 
-public class UserService {
+import factory.extension.DisposableBean;
+import factory.extension.InitializingBean;
+
+public class UserService implements InitializingBean, DisposableBean {
 
     private String uId;
     private String company;
@@ -41,6 +44,24 @@ public class UserService {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("执行重写销毁方法 destroy!");
+    }
+
+    public void close() {
+        System.out.println("执行xml定义的销毁方法 close!");
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        System.out.println("执行重写初始化方法 afterPropertiesSet!");
+    }
+
+    public void init() {
+        System.out.println("执行xml定义的销毁方法 init!");
     }
 
     @Override

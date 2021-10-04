@@ -1,6 +1,7 @@
 package factory.factory;
 
 import factory.bean.XmlBeanDefinitionReader;
+import factory.extension.ClassPathXmlApplicationContext;
 import factory.mine.MyBeanFactoryPostProcessor;
 import factory.mine.MyBeanPostProcessor;
 import factory.mine.UserService;
@@ -30,17 +31,16 @@ public class TestApplication {
         System.out.println("测试结果：" + userService);
     }
 
-    /*
+
     @Test
-    public void test_xml() {
+    public void test_xml() throws Exception {
         // 1.初始化 BeanFactory
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:springPostProcessor.xml");
 
         // 2. 获取Bean对象调用方法
-        UserService userService = applicationContext.getBean("userService", UserService.class);
+        UserService userService = (UserService) applicationContext.getBean("userService", UserService.class);
         String result = userService.queryUserInfo();
         System.out.println("测试结果：" + result);
     }
 
-     */
 }

@@ -1,21 +1,30 @@
 package factory.factory;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import factory.bean.AutowireCapableBeanFactory;
 import factory.bean.BeanDefinition;
 import factory.bean.BeanReference;
 import factory.extension.BeanPostProcessor;
+import factory.extension.DisposableBean;
+import factory.extension.DisposableBeanAdapter;
+import factory.extension.InitializingBean;
 import factory.support.CglibSubclassingInstantiationStrategy;
 import factory.support.InstantiationStrategy;
 import factory.support.PropertyValue;
 import factory.support.PropertyValues;
 
 import java.lang.reflect.Constructor;
-import java.util.Properties;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
+
+    private final Map<String, DisposableBean> disposableBeans = new ConcurrentHashMap<>(16);
 
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args){
@@ -27,6 +36,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         } catch (Exception e) {
             throw new RuntimeException("Instantiation of bean failed", e);
         }
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
         addSingleton(beanName, bean);
         return bean;
     }
@@ -38,7 +48,24 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return wrappedBean;
     }
 
-    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) {}
+    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) {
+        if (wrappedBean instanceof InitializingBean) {
+            ((InitializingBean) wrappedBean).afterPropertiesSet();
+        }
+        String initMethodName = beanDefinition.getInitMethodName();
+        if (StrUtil.isNotEmpty(initMethodName)) {
+            try {
+                Method initMethod = beanDefinition.getBeanClass().getMethod(initMethodName);
+                initMethod.invoke(wrappedBean);
+            } catch (NoSuchMethodException e1) {
+                throw new RuntimeException("Could not find an init method named '"+initMethodName+"' on bean with name '"+beanName+"'");
+            } catch (IllegalAccessException e2) {
+                throw new RuntimeException("Init method named '"+beanName +"' on bean with name '"+wrappedBean +"' is no accessible");
+            } catch (InvocationTargetException e3) {
+                throw new RuntimeException(e3.getMessage(), e3);
+            }
+        }
+    }
 
     protected Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) throws Exception {
         Constructor constructorToUse = null;
@@ -103,5 +130,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             result = current;
         }
         return result;
+    }
+
+    public void registerDisposableBean(String beanName, DisposableBean bean) {
+        disposableBeans.put(beanName, bean);
+    }
+
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
     }
 }

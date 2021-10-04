@@ -2,6 +2,7 @@ package factory.extension;
 
 import factory.bean.ConfigurableListableBeanFactory;
 import factory.factory.BeanFactoryPostProcessor;
+import factory.factory.DefaultListableBeanFactory;
 import factory.io.DefaultResourceLoader;
 
 import java.util.Map;
@@ -32,5 +33,42 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         for (BeanPostProcessor beanPostProcessor : beanPostProcessorMap.values()) {
             beanFactory.addBeanPostProcessor(beanPostProcessor);
         }
+    }
+
+    @Override
+    public void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    }
+
+    @Override
+    public <T> Map<String, T> getBeansOfType(Class<T> type) {
+        return getBeanFactory().getBeansOfType(type);
+    }
+
+    @Override
+    public void close() {
+        getBeanFactory().destroySingletons();
+    }
+
+    protected abstract void loadBeanDefinitions(DefaultListableBeanFactory beanFactory);
+
+    @Override
+    public String[] getBeanDefinitionNames() {
+        return getBeanFactory().getBeanDefinitionNames();
+    }
+
+    @Override
+    public Object getBean(String name) throws Exception {
+        return getBeanFactory().getBean(name);
+    }
+
+    @Override
+    public Object getBean(String name, Object... args) throws Exception {
+        return getBeanFactory().getBean(name, args);
+    }
+
+    @Override
+    public <T> T getBean(String name, Class<T> requiredType) throws Exception {
+        return getBeanFactory().getBean(name, requiredType);
     }
 }

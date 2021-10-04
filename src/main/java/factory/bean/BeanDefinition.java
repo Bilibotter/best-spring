@@ -8,4 +8,11 @@ public interface BeanDefinition {
 
     PropertyValues getPropertyValues();
 
+    String getInitMethodName();
+
+    void setInitMethodName(String initMethodName);
+
+    String getDestroyMethodName();
+
+    void setDestroyMethodName(String destroyMethodName);
 }

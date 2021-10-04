@@ -61,7 +61,7 @@ public class UserService implements InitializingBean, DisposableBean {
     }
 
     public void init() {
-        System.out.println("执行xml定义的销毁方法 init!");
+        System.out.println("执行xml定义的初始化方法 init!");
     }
 
     @Override

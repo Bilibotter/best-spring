@@ -6,8 +6,8 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
     public ClassPathXmlApplicationContext() {
     }
 
-    public ClassPathXmlApplicationContext(String configLocations) {
-        this(new String[]{configLocations});
+    public ClassPathXmlApplicationContext(String configLocation) {
+        this(new String[]{configLocation});
     }
 
     public ClassPathXmlApplicationContext(String[] configLocations) {

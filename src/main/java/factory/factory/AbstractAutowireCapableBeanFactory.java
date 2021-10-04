@@ -24,7 +24,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
-    private final Map<String, DisposableBean> disposableBeans = new ConcurrentHashMap<>(16);
+    // private final Map<String, DisposableBean> disposableBeans = new ConcurrentHashMap<>(16);
 
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args){
@@ -130,10 +130,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             result = current;
         }
         return result;
-    }
-
-    public void registerDisposableBean(String beanName, DisposableBean bean) {
-        disposableBeans.put(beanName, bean);
     }
 
     protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {

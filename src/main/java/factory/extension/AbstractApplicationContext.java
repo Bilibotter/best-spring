@@ -4,6 +4,7 @@ import factory.bean.ConfigurableListableBeanFactory;
 import factory.factory.BeanFactoryPostProcessor;
 import factory.factory.DefaultListableBeanFactory;
 import factory.io.DefaultResourceLoader;
+import factory.mine.ApplicationContextAwarePostProcessor;
 
 import java.util.Map;
 
@@ -13,6 +14,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         refreshBeanFactory();
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
         invokeBeanFactoryPostProcessors(beanFactory);
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwarePostProcessor(this));
         registerBeanFactory(beanFactory);
         beanFactory.preInstantiateSingletons();
     }

@@ -38,7 +38,7 @@ public class TestApplication {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
         applicationContext.registerShutdownHook();
         // 2. 获取Bean对象调用方法
-        UserService userService = (UserService) applicationContext.getBean("userService", UserService.class);
+        UserService userService = applicationContext.getBean("userService", UserService.class);
         String result = userService.queryUserInfo();
         System.out.println("测试结果：" + result);
     }

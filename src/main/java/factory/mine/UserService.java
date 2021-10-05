@@ -1,14 +1,17 @@
 package factory.mine;
 
+import factory.bean.ApplicationContextAware;
+import factory.extension.ApplicationContext;
 import factory.extension.DisposableBean;
 import factory.extension.InitializingBean;
 
-public class UserService implements InitializingBean, DisposableBean {
+public class UserService implements InitializingBean, DisposableBean, ApplicationContextAware {
 
     private String uId;
     private String company;
     private String location;
     private UserDao userDao;
+    private ApplicationContext applicationContext;
 
     public String queryUserInfo() {
         return userDao.queryUserName(uId);
@@ -44,6 +47,12 @@ public class UserService implements InitializingBean, DisposableBean {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        System.out.println("设置UserService的ApplicationContext的感知");
     }
 
     @Override

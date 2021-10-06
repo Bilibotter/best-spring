@@ -2,13 +2,14 @@ package factory.factory;
 
 import factory.bean.BeanDefinition;
 import factory.bean.ConfigurableBeanFactory;
-import factory.bean.DefaultSingletonBeanRegistry;
+import factory.bean.FactoryBean;
+import factory.bean.FactoryBeanRegistrySupport;
 import factory.extension.BeanPostProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
@@ -28,13 +29,24 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     }
 
     protected <T> T doGetBean(final String name, final Object[] args){
-        Object bean = getSingleton(name);
-        if (bean != null) {
-            return (T) bean;
+        Object sharedInstance = getSingleton(name);
+        if (sharedInstance == null) {
+            BeanDefinition beanDefinition = getBeanDefinition(name);
+            sharedInstance = createBean(name, beanDefinition, args);
         }
+        return (T) getObjectForBeanInstance(sharedInstance, name);
+    }
 
-        BeanDefinition beanDefinition = getBeanDefinition(name);
-        return (T) createBean(name, beanDefinition, args);
+    private Object getObjectForBeanInstance(Object beanInstance, String beanName) {
+        if (! (beanInstance instanceof FactoryBean)) {
+            return beanInstance;
+        }
+        Object object = getCacheObjectForFactoryBean(beanName);
+        if (object == null) {
+            FactoryBean<?> factoryBean = (FactoryBean<?>) beanInstance;
+            object = getObjectFromFactoryBean(factoryBean, beanName);
+        }
+        return object;
     }
 
     protected abstract BeanDefinition getBeanDefinition(String beanName);

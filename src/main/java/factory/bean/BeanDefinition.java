@@ -15,4 +15,14 @@ public interface BeanDefinition {
     String getDestroyMethodName();
 
     void setDestroyMethodName(String destroyMethodName);
+
+    void setScope(String scope);
+
+    boolean isSingleton();
+
+    void setSingleton(boolean singleton);
+
+    boolean isPrototype();
+
+    void setPrototype(boolean prototype);
 }

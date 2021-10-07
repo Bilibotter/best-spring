@@ -1,5 +1,5 @@
 package factory.events;
 
-public interface ApplicationEventPublish {
+public interface ApplicationEventPublisher {
     void publishEvent(ApplicationEvent event);
 }

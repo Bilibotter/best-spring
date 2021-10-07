@@ -29,7 +29,7 @@ public abstract class AbstractApplicationEventMulticaster implements Application
         this.beanFactory = beanFactory;
     }
 
-    protected boolean supportsEvent(ApplicationListener<ApplicationEvent> applicationListener, ApplicationEvent event) {
+    protected boolean supportsEvent(ApplicationListener<? extends ApplicationEvent> applicationListener, ApplicationEvent event) {
         Class<? extends ApplicationListener> listenerClass = applicationListener.getClass();
         Class<?> targetClass = ClassUtils.isCglibProxyClass(listenerClass) ? listenerClass.getSuperclass() : listenerClass;
         Type genericInterface = targetClass.getGenericInterfaces()[0];

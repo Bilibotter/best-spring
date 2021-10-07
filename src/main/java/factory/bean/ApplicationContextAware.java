@@ -1,6 +1,6 @@
 package factory.bean;
 
-import factory.extension.ApplicationContext;
+import factory.context.ApplicationContext;
 
 public interface ApplicationContextAware extends Aware{
     void setApplicationContext(ApplicationContext applicationContext);

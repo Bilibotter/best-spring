@@ -1,7 +1,7 @@
 package factory.mine;
 
 import factory.bean.ApplicationContextAware;
-import factory.extension.ApplicationContext;
+import factory.context.ApplicationContext;
 import factory.extension.BeanPostProcessor;
 
 public class ApplicationContextAwarePostProcessor implements BeanPostProcessor {

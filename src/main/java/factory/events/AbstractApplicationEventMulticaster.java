@@ -33,6 +33,7 @@ public abstract class AbstractApplicationEventMulticaster implements Application
         Class<? extends ApplicationListener> listenerClass = applicationListener.getClass();
         Class<?> targetClass = ClassUtils.isCglibProxyClass(listenerClass) ? listenerClass.getSuperclass() : listenerClass;
         Type genericInterface = targetClass.getGenericInterfaces()[0];
+        Type temp = ((ParameterizedType) genericInterface).getRawType();
         Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[0];
         String className = actualTypeArgument.getTypeName();
         Class<?> eventClassName;
@@ -43,4 +44,16 @@ public abstract class AbstractApplicationEventMulticaster implements Application
         }
         return eventClassName.isAssignableFrom(event.getClass());
     }
+
+    /*
+    public static void main(String[] args) {
+        ApplicationListener eventListener = new ApplicationListenerImpl();
+        ApplicationListener subEventListener = new ApplicationListenerImpl();
+        SubApplicationEvent subEvent = new SubApplicationEvent("Source");
+        AbstractApplicationEventMulticaster.supportsEvent(eventListener, subEvent);
+        AbstractApplicationEventMulticaster.supportsEvent(subEventListener, subEvent);
+        return;
+    }
+
+     */
 }

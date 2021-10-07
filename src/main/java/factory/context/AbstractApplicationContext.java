@@ -1,6 +1,7 @@
-package factory.extension;
+package factory.context;
 
 import factory.bean.ConfigurableListableBeanFactory;
+import factory.extension.BeanPostProcessor;
 import factory.factory.BeanFactoryPostProcessor;
 import factory.factory.DefaultListableBeanFactory;
 import factory.io.DefaultResourceLoader;

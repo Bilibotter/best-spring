@@ -1,7 +1,7 @@
 package factory.factory;
 
 import factory.bean.XmlBeanDefinitionReader;
-import factory.extension.ClassPathXmlApplicationContext;
+import factory.context.ClassPathXmlApplicationContext;
 import factory.mine.MyBeanFactoryPostProcessor;
 import factory.mine.MyBeanPostProcessor;
 import factory.mine.UserService;

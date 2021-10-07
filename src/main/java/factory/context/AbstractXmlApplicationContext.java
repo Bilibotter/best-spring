@@ -1,4 +1,4 @@
-package factory.extension;
+package factory.context;
 
 import factory.bean.XmlBeanDefinitionReader;
 import factory.factory.DefaultListableBeanFactory;

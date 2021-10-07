@@ -1,4 +1,4 @@
-package factory.extension;
+package factory.context;
 
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext {
     private String[] configLocations;

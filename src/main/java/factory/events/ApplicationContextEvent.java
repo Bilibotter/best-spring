@@ -1,5 +1,5 @@
 package factory.events;
-import factory.extension.ApplicationContext;
+import factory.context.ApplicationContext;
 
 public class ApplicationContextEvent extends ApplicationEvent {
     public ApplicationContextEvent(Object source) {

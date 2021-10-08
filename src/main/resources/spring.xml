@@ -5,7 +5,7 @@
 
     <bean id="userService" class="factory.mine.UserService" init-method="init" destroy-method="close">
         <property name="uId" value="10001"/>
-        <property name="company" value="哈哈"/>
+        <property name="company" value="某股份无限公司"/>
         <property name="location" value="深圳"/>
         <property name="userDao" ref="userDao"/>
     </bean>

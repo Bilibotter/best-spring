@@ -5,7 +5,7 @@ import factory.context.ApplicationContext;
 import factory.extension.DisposableBean;
 import factory.extension.InitializingBean;
 
-public class UserService implements InitializingBean, DisposableBean, ApplicationContextAware {
+public class UserService implements InitializingBean, DisposableBean, ApplicationContextAware, UserServiceFace {
 
     private String uId;
     private String company;
@@ -13,6 +13,7 @@ public class UserService implements InitializingBean, DisposableBean, Applicatio
     private UserDao userDao;
     private ApplicationContext applicationContext;
 
+    @Override
     public String queryUserInfo() {
         return userDao.queryUserName(uId);
     }

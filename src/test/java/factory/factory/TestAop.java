@@ -1,9 +1,6 @@
 package factory.factory;
 
-import factory.aop.AdvisedSupport;
-import factory.aop.Cglib2AopProxy;
-import factory.aop.JDKDynamicAopProxy;
-import factory.aop.TargetSource;
+import factory.aop.*;
 import factory.aop.impl.AspectJExpressionPointcut;
 import factory.aop.impl.MethodBeforeAdviceInterceptor;
 import factory.aop.impl.TestInvocationHandler;
@@ -19,6 +16,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -72,7 +70,9 @@ public class TestAop {
     @Test
     public void testAop() throws Exception {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:aop.xml");
-        UserServiceFace userService = (MyUserService) applicationContext.getBean("myUserService");
+        // Collection<AspectJExpressionPointcutAdvisor> advisors = applicationContext.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
+        Object temp = applicationContext.getBean("myUserService");
+        UserServiceFace userService = (UserServiceFace) applicationContext.getBean("myUserService");
         MethodBeforeAdviceInterceptor interceptor = (MethodBeforeAdviceInterceptor) applicationContext.getBean("methodInterceptor");
         String result = userService.queryUserInfo();
         return;

@@ -5,11 +5,14 @@ import factory.bean.ConfigurableBeanFactory;
 import factory.bean.FactoryBean;
 import factory.bean.FactoryBeanRegistrySupport;
 import factory.extension.BeanPostProcessor;
+import factory.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
+
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
@@ -61,5 +64,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return this.beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
 }

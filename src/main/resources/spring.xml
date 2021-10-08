@@ -5,9 +5,15 @@
 
     <bean id="userService" class="factory.mine.UserService" init-method="init" destroy-method="close">
         <property name="uId" value="10001"/>
-        <property name="company" value="腾讯"/>
+        <property name="company" value="哈哈"/>
         <property name="location" value="深圳"/>
         <property name="userDao" ref="userDao"/>
     </bean>
+
+    <bean class="factory.events.impl.ContextRefreshListener"/>
+
+    <bean class="factory.events.impl.CustomerEventListener"/>
+
+    <bean class="factory.events.impl.ContextClosedEventListener"/>
 
 </beans>

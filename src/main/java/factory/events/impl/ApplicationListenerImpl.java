@@ -1,5 +1,5 @@
-package factory.events;
-import factory.events.SubApplicationEvent;
+package factory.events.impl;
+import factory.events.ApplicationListener;
 
 public class ApplicationListenerImpl implements ApplicationListener<SubApplicationEvent> {
     @Override

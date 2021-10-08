@@ -1,4 +1,6 @@
-package factory.events;
+package factory.events.impl;
+
+import factory.events.ApplicationEvent;
 
 // @Deprecated
 public class SubApplicationEvent extends ApplicationEvent {

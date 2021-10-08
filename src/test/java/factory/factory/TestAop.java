@@ -7,6 +7,7 @@ import factory.aop.TargetSource;
 import factory.aop.impl.AspectJExpressionPointcut;
 import factory.aop.impl.TestInvocationHandler;
 import factory.aop.impl.TestMethodInterceptor;
+import factory.context.ClassPathXmlApplicationContext;
 import factory.mine.MyUserService;
 import factory.mine.UserService;
 import factory.mine.UserServiceFace;
@@ -65,5 +66,13 @@ public class TestAop {
         System.out.println("测试结果："+ jdkProxy.queryUserInfo());
         UserServiceFace cglibProxy = (UserServiceFace) new Cglib2AopProxy(advisedSupport).getProxy();
         System.out.println("测试结果："+ cglibProxy.queryUserInfo());
+    }
+
+    @Test
+    public void testAop() throws Exception {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:aop.xml");
+        UserServiceFace userService = (MyUserService) applicationContext.getBean("myUserService");
+        String result = userService.queryUserInfo();
+        return;
     }
 }

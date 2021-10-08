@@ -5,6 +5,7 @@ import factory.aop.Cglib2AopProxy;
 import factory.aop.JDKDynamicAopProxy;
 import factory.aop.TargetSource;
 import factory.aop.impl.AspectJExpressionPointcut;
+import factory.aop.impl.MethodBeforeAdviceInterceptor;
 import factory.aop.impl.TestInvocationHandler;
 import factory.aop.impl.TestMethodInterceptor;
 import factory.context.ClassPathXmlApplicationContext;
@@ -72,6 +73,7 @@ public class TestAop {
     public void testAop() throws Exception {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:aop.xml");
         UserServiceFace userService = (MyUserService) applicationContext.getBean("myUserService");
+        MethodBeforeAdviceInterceptor interceptor = (MethodBeforeAdviceInterceptor) applicationContext.getBean("methodInterceptor");
         String result = userService.queryUserInfo();
         return;
     }

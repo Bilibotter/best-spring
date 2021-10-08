@@ -7,13 +7,13 @@
 
     <bean id="beforeAdvice" class="factory.aop.impl.UserServiceBeforeAdvice"/>
 
-    <bean id="methodInterceptor" class="factory.aop.impl.MethodBeforeAdviceInterceptor">
+    <!--有错--><bean id="methodInterceptor" class="factory.aop.impl.MethodBeforeAdviceInterceptor">
         <property name="advice" ref="beforeAdvice"/>
     </bean>
 
-    <!--<bean id="pointcutAdvisor" class="factory.aop.AspectJExpressionPointcutAdvisor">
+    <bean id="pointcutAdvisor" class="factory.aop.AspectJExpressionPointcutAdvisor">
         <property name="expression" value="execution(* factory.mine.UserServiceFace.*(..))"/>
         <property name="advice" ref="methodInterceptor"/>
-    </bean>-->
+    </bean>
 
 </beans>

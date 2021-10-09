@@ -1,5 +1,6 @@
 package factory.bean;
 
+import factory.annotation.StringValueResolver;
 import factory.extension.BeanPostProcessor;
 import factory.factory.BeanFactory;
 
@@ -11,4 +12,8 @@ public interface ConfigurableBeanFactory extends BeanFactory, SingletonBeanRegis
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
     void destroySingletons();
+
+    void addEmbeddedValueResolver(StringValueResolver resolver);
+
+    String resolveEmbeddedValue(String value);
 }

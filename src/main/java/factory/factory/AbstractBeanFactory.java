@@ -1,5 +1,6 @@
 package factory.factory;
 
+import factory.annotation.StringValueResolver;
 import factory.bean.BeanDefinition;
 import factory.bean.ConfigurableBeanFactory;
 import factory.bean.FactoryBean;
@@ -13,6 +14,8 @@ import java.util.List;
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+
+    private final List<StringValueResolver> embeddedValueResolvers = new ArrayList<>();
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
@@ -60,6 +63,20 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
         this.beanPostProcessors.remove(beanPostProcessor);
         this.beanPostProcessors.add(beanPostProcessor);
+    }
+
+    @Override
+    public void addEmbeddedValueResolver(StringValueResolver resolver) {
+        this.embeddedValueResolvers.add(resolver);
+    }
+
+    @Override
+    public String resolveEmbeddedValue(String value) {
+        String result = value;
+        for (StringValueResolver resolver : embeddedValueResolvers) {
+            result = resolver.resolveStringValueResolver(result);
+        }
+        return result;
     }
 
     public List<BeanPostProcessor> getBeanPostProcessors() {

@@ -5,6 +5,8 @@ import factory.bean.BeanDefinitionRegistry;
 import factory.bean.ConfigurableListableBeanFactory;
 import factory.extension.BeanPostProcessor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -41,6 +43,20 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         return beanDefinitionMap.entrySet().stream()
                 .filter(it->type.isAssignableFrom(it.getValue().getBeanClass()))
                 .collect(Collectors.toMap(Map.Entry::getKey, it->(T) getBean(it.getKey())));
+    }
+
+    @Override
+    public <T> T getBean(Class<T> requiredType) {
+        List<String> beanNames = new ArrayList<>();
+        for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
+            if (requiredType.isAssignableFrom(entry.getValue().getBeanClass())) {
+                beanNames.add(entry.getKey());
+            }
+        }
+        if (beanNames.size() == 1) {
+            return getBean(beanNames.get(0), requiredType);
+        }
+        throw new RuntimeException(requiredType + " expected single bean but found " + beanNames.size() + ": " + beanNames);
     }
 
     @Override

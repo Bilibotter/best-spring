@@ -3,6 +3,7 @@ package factory.aop;
 import factory.bean.BeanFactoryAware;
 import factory.factory.BeanFactory;
 import factory.factory.DefaultListableBeanFactory;
+import factory.support.PropertyValues;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 
@@ -55,5 +56,10 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     private boolean isInfrastructureClass(Class<?> beanClass) {
         return Advice.class.isAssignableFrom(beanClass) || Pointcut.class.isAssignableFrom(beanClass) || Advisor.class.isAssignableFrom(beanClass);
+    }
+
+    @Override
+    public PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean, String beanName) {
+        return pvs;
     }
 }

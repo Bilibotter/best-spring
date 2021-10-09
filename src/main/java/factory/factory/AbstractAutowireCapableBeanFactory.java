@@ -32,6 +32,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 return bean;
             }
             bean = createBeanInstance(beanName, beanDefinition, args);
+            // 在属性填充前允许改变属性
+            // 改变诸如占位符填充
+            applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
             applyPropertyValues(beanName, bean, beanDefinition);
             bean = initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
@@ -43,6 +46,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             addSingleton(beanName, bean);
         }
         return bean;
+    }
+
+    protected void applyBeanPostProcessorsBeforeApplyingPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (!(beanPostProcessor instanceof InstantiationAwareBeanPostProcessor)) {
+                continue;
+            }
+            PropertyValues pvs = ((InstantiationAwareBeanPostProcessor) beanPostProcessor)
+                    .postProcessPropertyValues(beanDefinition.getPropertyValues(), bean, beanName);
+            // null不能使用for-each
+            if (pvs == null) {
+                continue;
+            }
+            for (PropertyValue propertyValue : pvs.getPropertyValues()) {
+                beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
+            }
+        }
     }
 
     protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {

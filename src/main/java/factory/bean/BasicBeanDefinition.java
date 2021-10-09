@@ -101,4 +101,24 @@ public class BasicBeanDefinition implements BeanDefinition {
     public void setPrototype(boolean prototype) {
         this.prototype = prototype;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BasicBeanDefinition that = (BasicBeanDefinition) o;
+
+        return new org.apache.commons.lang3.builder.EqualsBuilder().append(singleton, that.singleton).append(prototype, that.prototype).append(beanClass, that.beanClass).append(propertyValues, that.propertyValues).append(initMethodName, that.initMethodName).append(destroyMethodName, that.destroyMethodName).append(scope, that.scope).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new org.apache.commons.lang3.builder.HashCodeBuilder(17, 37).append(beanClass).append(propertyValues).append(initMethodName).append(destroyMethodName).append(scope).append(singleton).append(prototype).toHashCode();
+    }
 }

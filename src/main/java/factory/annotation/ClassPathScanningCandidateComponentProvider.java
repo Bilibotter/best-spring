@@ -16,4 +16,12 @@ public class ClassPathScanningCandidateComponentProvider {
         }
         return candidates;
     }
+
+    /*
+    public static void main(String[] args) {
+        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider();
+        provider.findCandidateComponents("factory.mine");
+    }
+
+     */
 }

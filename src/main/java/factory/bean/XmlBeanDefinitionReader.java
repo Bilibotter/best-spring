@@ -1,17 +1,18 @@
 package factory.bean;
 
+import factory.annotation.ClassPathBeanDefinitionScanner;
 import factory.io.Resource;
 import factory.io.ResourceLoader;
 import factory.support.PropertyValue;
-import org.w3c.dom.Document;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.XmlUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public XmlBeanDefinitionReader(BeanDefinitionRegistry registry) {
@@ -26,7 +27,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     public void loadBeanDefinitions(Resource resource) {
         try (InputStream inputStream = resource.getInputStream()){
             doLoadBeanDefinitions(inputStream);
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | DocumentException e) {
             throw new RuntimeException("IOException parsing XML document from "+resource, e);
         }
     }
@@ -52,62 +53,65 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         }
     }
 
-    protected void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException {
-        Document doc = XmlUtil.readXML(inputStream);
-        Element root = doc.getDocumentElement();
-        NodeList childNodes = root.getChildNodes();
-
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            // 判断元素
-            if (!(childNodes.item(i) instanceof Element)) {
-                continue;
+    /**
+     * @param inputStream
+     * @throws ClassNotFoundException
+     * @throws DocumentException
+     */
+    protected void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException, DocumentException {
+        SAXReader reader = new SAXReader();
+        Document document = reader.read(inputStream);
+        Element root = document.getRootElement();
+        Element componentScan = root.element("component-scan");
+        if (componentScan != null) {
+            String scanPath = componentScan.attributeValue("base-package");
+            if (StrUtil.isEmpty(scanPath)) {
+                throw new RuntimeException("The value of base-package attribute can not be empty or null");
             }
-            // 判断对象
-            if (!"bean".equals(childNodes.item(i).getNodeName())) {
-                continue;
-            }
+            scanPackage(scanPath);
+        }
 
-            // 解析标签
-            Element bean = (Element) childNodes.item(i);
-            String id = bean.getAttribute("id");
-            String name = bean.getAttribute("name");
-            String className = bean.getAttribute("class");
-            String initMethod = bean.getAttribute("init-method");
-            String destroyMethodName = bean.getAttribute("destroy-method");
-            String beanScope = bean.getAttribute("scope");
-            // 获取 Class，方便获取类中的名称
+        List<Element> beanList = root.elements("bean");
+        for (Element bean : beanList) {
+            String id = bean.attributeValue("id");
+            String name = bean.attributeValue("name");
+            String className = bean.attributeValue("class");
+            String initMethod = bean.attributeValue("init-method");
+            String destroyMethod = bean.attributeValue("destroy-method");
+            String beanScope = bean.attributeValue("scope");
+
             Class<?> clazz = Class.forName(className);
-            // 优先级 id > name
+            // id的优先级大于name
             String beanName = StrUtil.isNotEmpty(id) ? id : name;
             if (StrUtil.isEmpty(beanName)) {
                 beanName = StrUtil.lowerFirst(clazz.getSimpleName());
             }
-
-            // 定义Bean
             BeanDefinition beanDefinition = new BasicBeanDefinition(clazz);
-            beanDefinition.setDestroyMethodName(destroyMethodName);
             beanDefinition.setInitMethodName(initMethod);
-            beanDefinition.setScope(beanScope == null ? ConfigurableBeanFactory.SCOPE_SINGLETON : beanScope);
-            // 读取属性并填充
-            for (int j = 0; j < bean.getChildNodes().getLength(); j++) {
-                if (!(bean.getChildNodes().item(j) instanceof Element)) continue;
-                if (!"property".equals(bean.getChildNodes().item(j).getNodeName())) continue;
-                // 解析标签：property
-                Element property = (Element) bean.getChildNodes().item(j);
-                String attrName = property.getAttribute("name");
-                String attrValue = property.getAttribute("value");
-                String attrRef = property.getAttribute("ref");
-                // 获取属性值：引入对象、值对象
-                Object value = StrUtil.isNotEmpty(attrRef) ? new BasicBeanReference(attrRef) : attrValue;
-                // 创建属性信息
+            beanDefinition.setDestroyMethodName(destroyMethod);
+            if (StrUtil.isNotEmpty(beanScope)) {
+                beanDefinition.setScope(beanScope);
+            }
+            List<Element> propertyList = bean.elements("property");
+            for (Element property : propertyList) {
+                String attrName = property.attributeValue("name");
+                String attrValue = property.attributeValue("value");
+                String attrRef = property.attributeValue("ref");
+                Object value = StrUtil.isEmpty(attrRef) ? attrValue : new BasicBeanReference(attrRef);
                 PropertyValue propertyValue = new PropertyValue(attrName, value);
                 beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
             }
             if (getRegistry().containsBeanDefinition(beanName)) {
-                throw new RuntimeException("Duplicate beanName[" + beanName + "] is not allowed");
+                throw new RuntimeException("Duplicate beanName["+beanName+"] is not allowed");
             }
-            // 注册 BeanDefinition
             getRegistry().registryBeanDefinition(beanName, beanDefinition);
         }
+    }
+
+    private void scanPackage(String scanPath) {
+        String[] basePackages = StrUtil.split(scanPath, ",")
+                .stream().map(String::trim).toArray(String[]::new);
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getRegistry());
+        scanner.doScan(basePackages);
     }
 }

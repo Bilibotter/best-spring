@@ -56,7 +56,7 @@ public class PropertyPlaceholderConfigurer implements BeanFactoryPostProcessor {
         if (startIdx != -1 && endIdx != -1 && startIdx < endIdx) {
             String propKey = strVal.substring(startIdx + 2, endIdx);
             String propVal = properties.getProperty(propKey);
-            buffer.replace(startIdx, endIdx, propVal);
+            buffer.replace(startIdx, endIdx+1, propVal);
         }
         return buffer.toString();
     }

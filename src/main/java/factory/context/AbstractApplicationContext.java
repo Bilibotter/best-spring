@@ -1,5 +1,6 @@
 package factory.context;
 
+import factory.annotation.AutowireAnnotationBeanPostProcessor;
 import factory.bean.ConfigurableListableBeanFactory;
 import factory.events.*;
 import factory.extension.BeanPostProcessor;
@@ -21,6 +22,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
         invokeBeanFactoryPostProcessors(beanFactory);
         beanFactory.addBeanPostProcessor(new ApplicationContextAwarePostProcessor(this));
+        beanFactory.addBeanPostProcessor(new AutowireAnnotationBeanPostProcessor(this.getBeanFactory()));
         registerBeanFactory(beanFactory);
         initApplicationEventMultiCaster();
         registerListener();

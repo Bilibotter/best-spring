@@ -10,7 +10,7 @@ public class TestAnnotation {
     @Test
     public void testProperty() throws Exception {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:scanner.xml");
-        TempComponent tempComponent = (TempComponent)applicationContext.getBean("tempComponent");
+        TempComponent tempComponent = (TempComponent)applicationContext.getBean("testComponent");
         tempComponent.authenticate();
         return;
     }

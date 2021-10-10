@@ -15,6 +15,13 @@ public class AutowireAnnotationBeanPostProcessor implements InstantiationAwareBe
 
     private ConfigurableListableBeanFactory beanFactory;
 
+    public AutowireAnnotationBeanPostProcessor() {
+    }
+
+    public AutowireAnnotationBeanPostProcessor(ConfigurableListableBeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
+
     @Override
     public Object postProcessorBeforeInstantiation(Class<?> beanClass, String beanName) {
         return null;

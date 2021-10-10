@@ -7,9 +7,9 @@
         <property name="location" value="classpath:token.properties"/>
     </bean>
 
-    <bean id="tempComponent" class="factory.mine.TempComponent">
+    <!--<bean id="tempComponent" class="factory.mine.TempComponent">
         <property name="token" value="${token}"/>
-    </bean>
+    </bean>-->
 
     <context:component-scan base-package="factory.mine"/>
 </beans>

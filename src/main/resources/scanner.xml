@@ -11,5 +11,5 @@
         <property name="token" value="${token}"/>
     </bean>-->
 
-    <context:component-scan base-package="factory.mine"/>
+    <context:component-scan base-package="factory"/>
 </beans>

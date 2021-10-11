@@ -8,25 +8,35 @@ import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPostProcessor, BeanFactoryAware {
+
     private DefaultListableBeanFactory beanFactory;
+
+    private final Set<Object> earlyProxyReferences = Collections.synchronizedSet(new HashSet<Object>(16));
 
     @Override
     public Object postProcessorBeforeInstantiation(Class<?> beanClass, String beanName) {
-        if (isInfrastructureClass(beanClass)) {
+        return null;
+    }
+
+    protected Object wrapIfNecessary(Object bean, String beanName) {
+        if (isInfrastructureClass(bean.getClass())) {
             return null;
         }
         Collection<AspectJExpressionPointcutAdvisor> advisors = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
         for (AspectJExpressionPointcutAdvisor advisor : advisors) {
             ClassFilter classFilter = advisor.getPointcut().getClassFilter();
-            if (!classFilter.matches(beanClass)) {
+            if (!classFilter.matches(bean.getClass())) {
                 continue;
             }
             AdvisedSupport advisedSupport = new AdvisedSupport();
             TargetSource targetSource = null;
             try {
-                targetSource = new TargetSource(beanClass.getDeclaredConstructor().newInstance());
+                targetSource = new TargetSource(bean.getClass().getDeclaredConstructor().newInstance());
             } catch (Exception printOnly) {
                 printOnly.printStackTrace();
             }
@@ -36,7 +46,7 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
             advisedSupport.setProxyTargetClass(false);
             return new ProxyFactory(advisedSupport).getProxy();
         }
-        return null;
+        return bean;
     }
 
     @Override
@@ -46,11 +56,19 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
-        return bean;
+        return null;
+    }
+
+    @Override
+    public boolean postProcessAfterInstantiation(Object bean, String beanName) {
+        return true;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
+        if (!earlyProxyReferences.contains(beanName)) {
+            return wrapIfNecessary(bean, beanName);
+        }
         return bean;
     }
 
@@ -61,5 +79,11 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
     @Override
     public PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean, String beanName) {
         return pvs;
+    }
+
+    @Override
+    public Object getEarlyBeanReference(Object bean, String beanName) {
+        earlyProxyReferences.add(beanName);
+        return wrapIfNecessary(bean, beanName);
     }
 }

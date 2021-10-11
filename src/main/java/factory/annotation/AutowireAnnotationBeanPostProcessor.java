@@ -11,6 +11,7 @@ import factory.util.ClassUtils;
 import java.io.File;
 import java.lang.reflect.Field;
 
+@Component
 public class AutowireAnnotationBeanPostProcessor implements InstantiationAwareBeanPostProcessor, BeanFactoryAware {
 
     private ConfigurableListableBeanFactory beanFactory;
@@ -40,6 +41,11 @@ public class AutowireAnnotationBeanPostProcessor implements InstantiationAwareBe
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
         return null;
+    }
+
+    @Override
+    public boolean postProcessAfterInstantiation(Object bean, String beanName) {
+        return true;
     }
 
     @Override

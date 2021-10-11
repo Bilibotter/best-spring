@@ -8,18 +8,44 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
-    private Map<String, Object> singletonObjects = new ConcurrentHashMap<>();
+
+    private Map<String, Object> singletonObjects = new ConcurrentHashMap<>(16);
+
+    protected final Map<String, Object> earlySingletonObjects = new ConcurrentHashMap<>(16);
+
+    private final Map<String, ObjectFactory<?>> singletonFactories = new ConcurrentHashMap<>(16);
 
     private final Map<String, DisposableBean> disposableBeans = new ConcurrentHashMap<>(16);
 
     @Override
     public Object getSingleton(String beanName) {
-        return singletonObjects.get(beanName);
+        Object singletonObject = singletonObjects.get(beanName);
+        if (singletonObject != null) {
+            return singletonObject;
+        }
+        singletonObject = earlySingletonObjects.get(beanName);
+        if (singletonObject == null) {
+            ObjectFactory<?> objectFactory = singletonFactories.get(beanName);
+            if (objectFactory != null) {
+                singletonObject = singletonFactories.remove(beanName).getObject();
+                earlySingletonObjects.put(beanName, singletonObject);
+            }
+        }
+        return singletonObject;
     }
 
     @Override
     public void registerSingleton(String beanName, Object singletonObject) {
         singletonObjects.put(beanName, singletonObject);
+        earlySingletonObjects.remove(beanName);
+        singletonFactories.remove(beanName);
+    }
+
+    protected void addSingletonFactory(String beanName, ObjectFactory<?> singletonFactory) {
+        if (!singletonObjects.containsKey(beanName)) {
+            singletonFactories.put(beanName, singletonFactory);
+            earlySingletonObjects.remove(beanName);
+        }
     }
 
     protected void addSingleton(String beanName, Object singletonObject) {

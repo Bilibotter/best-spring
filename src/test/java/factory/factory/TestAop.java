@@ -9,6 +9,7 @@ import factory.context.ClassPathXmlApplicationContext;
 import factory.mine.MyUserService;
 import factory.mine.UserService;
 import factory.mine.UserServiceFace;
+import factory.util.ClassUtils;
 import org.aspectj.weaver.tools.PointcutExpression;
 import org.aspectj.weaver.tools.PointcutParser;
 import org.aspectj.weaver.tools.PointcutPrimitive;
@@ -32,6 +33,7 @@ public class TestAop {
                 targetObj.getClass().getInterfaces(),
                 new TestInvocationHandler(targetObj));
         String result = proxy.queryUserInfo();
+        boolean flag = ClassUtils.isCglibProxyClass(proxy.getClass());
         return;
     }
 

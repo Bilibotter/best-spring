@@ -78,6 +78,9 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     @Override
     public PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean, String beanName) {
+        // 空间换时间
+        // return new PropertyValues();
+        // 时间换空间
         return pvs;
     }
 

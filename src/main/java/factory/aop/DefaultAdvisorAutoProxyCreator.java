@@ -16,7 +16,8 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     private DefaultListableBeanFactory beanFactory;
 
-    private final Set<Object> earlyProxyReferences = Collections.synchronizedSet(new HashSet<Object>(16));
+    // earlyProxyReferences存放的都是BeanName
+    private final Set<String> earlyProxyReferences = Collections.synchronizedSet(new HashSet<String>(16));
 
     @Override
     public Object postProcessorBeforeInstantiation(Class<?> beanClass, String beanName) {

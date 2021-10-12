@@ -48,6 +48,11 @@ public class PropertyPlaceholderConfigurer implements BeanFactoryPostProcessor {
         }
     }
 
+    /**
+     * @param value
+     * @param properties
+     * @return
+     */
     private String resolvePlaceholder(String value, Properties properties) {
         String strVal = value;
         StringBuffer buffer = new StringBuffer(strVal);

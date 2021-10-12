@@ -35,12 +35,12 @@ public class AutowireAnnotationBeanPostProcessor implements InstantiationAwareBe
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) {
-        return null;
+        return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
-        return null;
+        return bean;
     }
 
     @Override

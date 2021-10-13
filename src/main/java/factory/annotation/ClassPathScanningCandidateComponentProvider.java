@@ -10,7 +10,7 @@ import java.util.Set;
 public class ClassPathScanningCandidateComponentProvider {
     public Set<BeanDefinition> findCandidateComponents(String basePackage) {
         Set<BeanDefinition> candidates = new LinkedHashSet<>();
-        Set<Class<?>> classes = ClassUtil.scanPackageByAnnotation(basePackage, Component.class);
+        Set<Class<?>> classes = ClassUtil.scanPackage(basePackage, clazz->clazz.isAnnotationPresent(Component.class)||clazz.isAnnotationPresent(Configuration.class));
         for (Class<?> clazz : classes) {
             candidates.add(new BasicBeanDefinition(clazz));
         }
@@ -20,8 +20,7 @@ public class ClassPathScanningCandidateComponentProvider {
     /*
     public static void main(String[] args) {
         ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider();
-        provider.findCandidateComponents("factory.mine");
+        provider.findCandidateComponents("factory");
     }
-
      */
 }

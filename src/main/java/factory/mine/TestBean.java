@@ -19,4 +19,13 @@ public class TestBean {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("TestBean{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", id=").append(id);
+        sb.append('}');
+        return sb.toString();
+    }
 }

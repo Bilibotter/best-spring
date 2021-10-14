@@ -164,7 +164,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Object configInstance = getBean(beanDefinition.getConfigurationName());
         Method method;
         try {
-            method = configInstance.getClass().getMethod(beanDefinition.getConfigurationBeanMethod());
+            method = configInstance.getClass().getMethod(beanDefinition.getConfigurationBeanMethod(), beanDefinition.getConfigBeanMethodParamTypes());
             Object[] args = getParamValues(beanDefinition.getConfigBeanMethodParamTypes());
             Object beanInstance = method.invoke(configInstance, args);
             return beanInstance;

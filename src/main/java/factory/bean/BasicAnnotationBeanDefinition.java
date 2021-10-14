@@ -2,6 +2,8 @@ package factory.bean;
 
 
 import factory.support.PropertyValues;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
@@ -62,5 +64,25 @@ public class BasicAnnotationBeanDefinition extends BasicBeanDefinition implement
     @Override
     public void setConfigBeanMethodParamRefs(List<String> configBeanMethodParamRefs) {
         this.configBeanMethodParamRefs = configBeanMethodParamRefs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BasicAnnotationBeanDefinition that = (BasicAnnotationBeanDefinition) o;
+
+        return new EqualsBuilder().appendSuper(super.equals(o)).append(configurationName, that.configurationName).append(configurationBeanMethod, that.configurationBeanMethod).append(configBeanMethodParamTypes, that.configBeanMethodParamTypes).append(configBeanMethodParamRefs, that.configBeanMethodParamRefs).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).appendSuper(super.hashCode()).append(configurationName).append(configurationBeanMethod).append(configBeanMethodParamTypes).append(configBeanMethodParamRefs).toHashCode();
     }
 }

@@ -154,6 +154,37 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) throws Exception {
+        if (beanDefinition instanceof AnnotationBeanDefinition && ((AnnotationBeanDefinition) beanDefinition).getConfigurationName() != null) {
+            return createAnnotationBeanInstance(beanName, (AnnotationBeanDefinition) beanDefinition);
+        }
+        return createBasicBeanInstance(beanName, beanDefinition, args);
+    }
+
+    private Object createAnnotationBeanInstance(String beanName, AnnotationBeanDefinition beanDefinition) {
+        Object configInstance = getBean(beanDefinition.getConfigurationName());
+        Method method;
+        try {
+            method = configInstance.getClass().getMethod(beanDefinition.getConfigurationBeanMethod());
+            Object args = getParamValues(beanDefinition.getConfigBeanMethodParamTypes());
+            Object beanInstance = method.invoke(configInstance, args);
+            return beanInstance;
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Configuration class ["+beanDefinition.getConfigurationName()+"] miss method "+beanDefinition.getConfigurationBeanMethod()+" to create bean ["+beanName+"]", e);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("During invoke "+beanDefinition.getConfigurationBeanMethod() + " error occur", e);
+        }
+    }
+
+    private Object[] getParamValues(Class[] injectedBeanClass) {
+        Object[] args = new Object[injectedBeanClass.length];
+        for (int i = 0; i < injectedBeanClass.length; i++) {
+            Object dependentBean = getBean(injectedBeanClass[i]);
+            args[i] = dependentBean;
+        }
+        return args;
+    }
+
+    private Object createBasicBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) throws Exception {
         Constructor constructorToUse = null;
         Class<?> beanClass = beanDefinition.getBeanClass();
         Constructor<?> [] declaredConstructor = beanClass.getConstructors();

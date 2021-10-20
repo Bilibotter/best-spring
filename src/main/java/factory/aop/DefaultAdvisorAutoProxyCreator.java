@@ -85,6 +85,7 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
         return pvs;
     }
 
+
     @Override
     public Object getEarlyBeanReference(Object bean, String beanName) {
         earlyProxyReferences.add(beanName);
